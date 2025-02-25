@@ -1,2 +1,7 @@
-# DSAI-3202---Parallel-Distributed-Computing
-creating formal repository for DSAI 3202.
+
+# Lab1
+DSAI 3202 - Parallel &amp; Distributed Learning
+
+Line-1
+
+ONline Editing on Github
