@@ -1,5 +1,0 @@
-
-## editor
-pandas
-scikit-learn
-pytest
