@@ -5,12 +5,12 @@ Bismillah.
 # DSAI3202 - Parallel & Distributed Computing
 
 ## Branches:
-- l1
-- l2
-- l3-p1
-- l3-p2
-- l4-p1
-- l4-p2
+- L1
+- L2
+- L3-P1
+- L3-P2
+- L4-P1
+- L4-P2
 
 ## Structure:
 - src/ → Source code files
