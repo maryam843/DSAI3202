@@ -1,2 +1,3 @@
-# DSAI-3202---Parallel-Distributed-Computing
-creating formal repository for DSAI 3202.
+# Lab – 3 Part 1: Data Parallel Model
+
+"creating readme.md for L3-P2"
