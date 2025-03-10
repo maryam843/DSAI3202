@@ -1,5 +1,3 @@
-# entry point for execution
-
 from src.threads import calculate_sum_parallel
 from src.processing import calculate_sum_multiprocessing
 from src.functions import calculate_sum_sequential
