@@ -1,0 +1,14 @@
+
+⚡ Running for 10000 numbers...
+
+⚡ Running for 100000 numbers...
+Process 3: Acquired DB_Conn_0 ✅
+Process 5: Acquired DB_Conn_1 ✅
+Process 2: Waiting for connection... 🕒
+Process 1: Waiting for connection... 🕒
+Process 7: Waiting for connection... 🕒
+Process 4: Waiting for connection... 🕒
+Process 0: Waiting for connection... 🕒
+Process 6: Waiting for connection... 🕒
+Process 5: Released DB_Conn_1 ❌
+Process 3: Released DB_Conn_0 ❌

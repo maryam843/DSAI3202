@@ -1,0 +1,16 @@
+sequential_squares,0.0008
+sequential_squares_10000,0.0012
+multiprocessing_squares,1.7425
+multiprocessing_squares_10000,1.8543
+pool_map,1.847
+pool_map_10000,1.9278
+concurrent_futures,1.7078
+concurrent_futures_10000,2.2049
+sequential_squares,0.0066
+sequential_squares_100000,0.0081
+multiprocessing_squares,1.593
+multiprocessing_squares_100000,1.6718
+pool_map,1.5931
+pool_map_100000,1.664
+concurrent_futures,1.9349
+concurrent_futures_100000,2.4785

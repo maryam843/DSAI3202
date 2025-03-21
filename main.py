@@ -1,48 +1,61 @@
-# main.py
-
-import random
-import time
-from src.square import *
-from src.connection_pool import *
 import multiprocessing
+import time
+from src.square import (
+    sequential_squares,
+    multiprocessing_squares,
+    pool_map,
+    concurrent_futures
+)
+from src.connection_pool import ConnectionPool, access_database
+from src.utils import log_to_file, log_timing, plot_execution_time, save_json
 
 
-def generate_random_numbers(n):
-    return [random.randint(1, 100) for _ in range(n)]
+def run_square():
+    """Runs all square calculation approaches and logs output."""
+    test_sizes = [10**4, 10**5]  # Start small before scaling up
+
+    for size in test_sizes:
+        numbers = list(range(size))
+        log_to_file("parallel_logs.txt", f"\n⚡ Running for {size} numbers...")
+
+        functions = [
+            ("sequential_squares", sequential_squares),
+            ("multiprocessing_squares", multiprocessing_squares),
+            ("pool_map", pool_map),
+            ("concurrent_futures", concurrent_futures)
+        ]
+
+        for name, func in functions:
+            start_time = time.perf_counter()
+            func(numbers)
+            end_time = time.perf_counter()
+            log_timing(f"{name}_{size}", start_time, end_time)
+
+    print("✅ Timing tests completed! Check 'timing_results.csv'.")
+
+
+def run_connection_pool():
+    """Simulates connection pool handling with logging."""
+    pool = ConnectionPool(size=2)  # ✅ Limited to 2 connections
+    processes = []
+
+    for i in range(8):  # ✅ Spawn 8 processes
+        p = multiprocessing.Process(target=access_database, args=(pool, i))
+        p.start()
+        processes.append(p)
+
+    for p in processes:
+        p.join()
+
+    # Save connection pool usage to JSON
+    save_json("pool_usage.json", list(pool.usage_log))
 
 
 if __name__ == "__main__":
-    numbers = generate_random_numbers(10**6)
+    print("\n💻 Running Parallel Squares 🔥\n")
+    run_square()  # Run parallel computations
 
-    # Square Program
-    print("Running sequential loop...")
-    start = time.time()
-    sequential_squares(numbers)
-    print(f"Sequential Time: {time.time() - start:.2f} sec\n")
+    print("\n🔒 Running Connection Pool 🛑\n")
+    run_connection_pool()
 
-    print("Running multiprocessing loop...")
-    start = time.time()
-    multiprocessing_squares(numbers)
-    print(f"Multiprocessing Time: {time.time() - start:.2f} sec\n")
-
-    print("Running pool map()...")
-    start = time.time()
-    pool_map(numbers)
-    print(f"Pool Map Time: {time.time() - start:.2f} sec\n")
-
-    print("Running concurrent.futures...")
-    start = time.time()
-    concurrent_futures(numbers)
-    print(f"Concurrent Futures Time: {time.time() - start:.2f} sec\n")
-
-    # Semaphore Connection Pool
-    print("\n--- Connection Pool with Semaphore ---")
-    pool = ConnectionPool(max_connections=3)
-    processes = []
-    for i in range(10):
-        process = multiprocessing.Process(target=access_database, args=(pool, i))
-        processes.append(process)
-        process.start()
-
-    for process in processes:
-        process.join()
+    plot_execution_time("outputs/timing_results.csv")
