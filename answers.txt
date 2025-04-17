@@ -1,6 +1,5 @@
 ANSWERS
 ===========
-
 # Observation, Mechanism, Statistics & Limitation - Current Explorer:
     - Algorithm Used: Right-Hand Rule, Loop detection and Backtracking
     - Mechanism:
@@ -98,3 +97,5 @@ ANSWERS
     - src/astar.py contains the refactorred code for running the static maze with enhancements, results stored in results.csv
     - time taken and total moves(102-A* & 119-BFS) dropped significantly.
     - algorithm_visualization.py: code for using the results.csv, to create and compare the performances using visualizations and stored in algorithm_performanceVisuals.png
+
+# Ran all the code once in vm and worked entirely on local PC, VScode
