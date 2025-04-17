@@ -1,0 +1,100 @@
+ANSWERS
+===========
+
+# Observation, Mechanism, Statistics & Limitation - Current Explorer:
+    - Algorithm Used: Right-Hand Rule, Loop detection and Backtracking
+    - Mechanism:
+        - The explorer starts at a given position in the maze and tries to solve it using the right-hand wall-following rule.
+        - If it gets stuck in a loop, it tries to backtrack to the last position with multiple movement options; trying to finally reach the goal.
+        - Explorer starts at any given start position (maze.start_pos) and initially faces right.
+        - At every step the algorithm attempts to turn right and move if its unblocked.
+        - If its bolcked, the algorithm tries to move forward, where it checks if the next cell in the current direction is within bounds and not a wall, ensuring that the explorer is not walking over the walls.
+        - if its blocked agin, then it turns left
+        - if all the three possibilities are blocekd then, it turns around, meaning it turns left twice and moves backward (introduces redundant visists)
+        - It also tries detect simple loops (like pacing back and forth in a dead-end), but doesn’t check if we’re visiting already visited positions in a cycle — just raw repetition.
+        - But only detects short loops of length 3, longer loops or non-repeating patterns might go undetected.
+        - This is the reason why we have redundant visists, the player keeps going back even if the walls closed, and even if its visited many times.
+        -  When its stuck, closed walls; it finds a backtrack path to a previously visited position where there were multiple movement movement choices, if This point has >1 choices, that’s a decision point, and it tries to resume exploration from there.
+        -  Only detects short loops: Misses complex loops or wandering cycles
+
+    - Right-Hand Rule: 
+        - The Right-Hand Rule is a classic maze-solving technique that relies on keeping one's right hand in constant contact with the wall while navigating through the maze.
+        - In this algorithm, it is implemented by always attempting to turn right at an intersection, then checking whether a forward move is possible. 
+        - If the right turn is blocked, the agent checks the path directly ahead, then the left, and finally turns around if all directions are blocked. 
+        - This approach ensures the explorer follows along the wall and systematically explores the maze. 
+        - However, the Right-Hand Rule is best suited for simply-connected mazes (i.e., mazes without isolated inner loops), as it can get caught in infinite loops in more complex mazes where walls don't lead to the exit.
+    
+    - Loop Detection:
+        - To prevent the explorer from endlessly walking in circles, a basic loop detection mechanism is integrated. 
+        - This is done by maintaining a short-term memory of the last three visited positions using a fixed-size deque. 
+        - If the same position appears repeatedly within that short window (i.e., the last three positions are identical), the system assumes the agent is stuck in a loop. 
+        - This detection strategy, while simple, effectively prevents basic cyclic paths and triggers corrective action when repeated patterns are observed. 
+        - It’s a lightweight yet helpful technique for identifying local loops or oscillations during traversal.
+
+    - Backtracking:
+        - When the algorithm detects that the explorer is stuck or trapped in a loop, it triggers a backtracking process to escape the deadlock. 
+        - Backtracking involves retracing steps to the most recent junction or decision point — a location where more than one path was available but not all options were explored. 
+        - To achieve this, the algorithm searches backward through the move history (self.moves) and identifies such branching points by checking how many adjacent, unvisited directions exist at each step. 
+        - Once found, the explorer physically walks back to that earlier position by reconstructing a path in reverse, effectively "undoing" a portion of its journey. 
+        - This backtracking strategy allows the explorer to escape from dead ends or loops and continue exploring new paths toward the goal, though it may revisit old areas multiple times due to lack of memory about previously tried directions.
+
+    - Performance Statistics:
+       - Initial Explorer Maze Exploration Statistics
+       - Total time taken: 0.003368 seconds
+            - indicates the total real-world time it took the explorer to navigate the maze from start to finish.
+       - Total moves made: 1279
+        -  the total number of movement steps the explorer took, including forward movements and turns.
+        - This value includes redundant visits, back-and-forths, and inefficient paths due to loop detection failure or Right-Hand Rule limitations.
+       - Number of backtrack operations: 30
+            - means it had to reverse and find alternate paths 30 times, which reflects either:
+            - tells us how many times the explorer explicitly backtracked after detecting that it was stuck or in a loop.
+            - Backtracking is triggered by loop detection or when the explorer hits a dead end with no unexplored paths.
+       - Average moves per second: 379716.8
+            - Average moves per second=Total time taken/Total moves
+       - Note: Width and height arguments were ignored for the static maze
+
+# Multiprocessing: Using Multiprocess, MPI, Celery + RabbitMQ & Visualization = False in all
+        - multiprocessing_main.py contains the code for multiprocessing and running multiple explorers simultaneously, terminal screenshot is at multiprocessing_results.png.
+        - mpi_main.py contains the code for running this on 4 processors simultaneously; terminal screenshot is at mpi_results.png.
+        - celery_main.py contains the code and helpers from celery_app.py and tasks.py where we run multiple processes using rabbitmq server in celery; terminal screenshot is at celery_results.png and setup screenshot at celery_setup.png.
+        Multiprocessing helps run them in parallel, but since the maze and logic are the same, we get similar results
+        - verified consistency, since its a static maze: no of moves is same in all the 3; since we use same algorithm and same static maze environments
+        - there's slight variation in the timings due to overhead from multiprocessing, since we use different multiprocessing techniques
+        - The same number of backtracks across explorers indicates consistent logic & deterministic behaviour
+        - celery implementation was hardest from all due to its complex environmental setup.
+    Overall, all three methods successfully executed multiple explorers in parallel, 
+    collected consistent performance statistics on the static maze, 
+    and helped verify the correctness and determinism of the exploration logic.
+
+# Main Limitations of Current Explorer:
+    - The current maze explorer uses the right-hand rule algorithm, which is a simple, greedy approach to maze-solving. 
+    - While this method works in many cases, it has several limitations, especially in more complex or non-trivial mazes. 
+    - Below are the key limitations of the current implementation:
+        - Inefficient Pathfinding (Suboptimal Solution): 
+            - The right-hand rule does not guarantee the shortest path because it blindly follows one wall and doesn’t consider alternative, potentially shorter paths. 
+            - This results in inefficient navigation, especially in larger or more complex mazes.
+        - Lack of Exploration Strategy:
+            - The explorer's inability to intelligently choose between multiple paths based on the current situation leads to unnecessary detours. 
+            - Unlike algorithms that calculate the cost to the goal (like A*), the right-hand rule only reacts to the local environment without any foresight.
+        - Loop Detection and Backtracking Issues:
+            - In cases where the maze has loops or circular paths, the explorer can easily get stuck in a cycle without realizing it. 
+            - While backtracking can help, the algorithm does not detect and handle loops effectively, leading to wasted time.
+        - Lack of Memory for Past Moves:
+            - Without tracking past moves, the explorer often retraces steps that have already been explored, leading to redundant effort and slower exploration times. 
+            - Efficient backtracking and memory of previously visited paths can help in avoiding this issue.
+
+# Enhancements Algorithm - BFS & A*:
+    # BFS guarantees the shortest path in an unweighted grid.
+    # A* can incorporate heuristics (like Manhattan distance) to guide search toward the goal.
+
+    - The right-hand rule is a greedy approach and doesn't guarantee the shortest path.
+    - BFS explores all possible paths level-by-level and guarantees the shortest path in an unweighted maze.
+    - A* uses a heuristic function (like Manhattan distance) to prioritize paths that are closer to the goal, balancing speed and optimality.
+    - A* doesn't just follow walls or local rules—it strategically evaluates which paths are likely better using both: Cost to reach a cell (g(n)) & Estimated cost to goal (h(n)).
+    - Both BFS and A* maintain a visited set of explored positions, preventing revisiting the same location and eliminates infinite cycles.
+    
+    - algorithm_performanceResults.png contains the terminal screenshot for all the 3 algorithms.
+    - src/bfs.py contains the refactorred code for running the static maze with enhancements, results stored in results.csv
+    - src/astar.py contains the refactorred code for running the static maze with enhancements, results stored in results.csv
+    - time taken and total moves(102-A* & 119-BFS) dropped significantly.
+    - algorithm_visualization.py: code for using the results.csv, to create and compare the performances using visualizations and stored in algorithm_performanceVisuals.png

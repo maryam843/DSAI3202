@@ -1,0 +1,4 @@
+Algorithm,Time Taken,Total Moves
+static,43.019462,1279
+A*,0.000998,102
+BFS,0.001502,119
