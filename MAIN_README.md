@@ -11,6 +11,7 @@ Bismillah.
 - L3-P2
 - L4-P1
 - L4-P2
+- L6
 
 ## Structure:
 - src/ → Source code files
@@ -20,8 +21,10 @@ Bismillah.
 - README.md → Explanation of the lab activity
 - data/ → (If applicable) Dataset files
 - notebooks/ → (If applicable) Jupyter Notebook files (.ipynb)
+- MAIN_README.md → details of the repository
+- LabDocument.pdf  → lab Activity details
 
-note - This file will be visible to all branches, and will be created each time a new branch is created, and the main README.md file will be added each time.
+note - This file will be visible to all branches, and will be created each time a new branch is created, and the README.md file will be added each time.
 
 Enjoyy!
 
